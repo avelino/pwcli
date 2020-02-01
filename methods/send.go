@@ -29,6 +29,7 @@ type Reqdata struct {
 	Pass    string     `json:"httpPassword"`
 	Token   string     `json:"bearerToken"`
 	Ctype   string     `json:"contentType"`
+	Name    string     `json:"name"`
 	Heads   []string   `json:"headers"`
 	Params  []string   `json:"params"`
 	Bparams []Bpardata `json:"bodyParams"`
@@ -74,7 +75,7 @@ func request(c []Colls, i int) {
 		}
 		methods := color.HiYellowString(c[0].Request[i].Method)
 		fURL := colors.Sprintf(c[0].Request[i].URL + c[0].Request[i].Path)
-		fmt.Printf("%s \t%s\t%s", fURL, methods, out)
+		fmt.Printf("%s |\t%s |\t%s |\t%s", color.HiGreenString(c[0].Request[i].Name), fURL, methods, out)
 	}
 
 }
