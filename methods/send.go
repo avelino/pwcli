@@ -12,7 +12,7 @@ import (
 	"github.com/urfave/cli"
 )
 
-//Colls hold the format of the basic `postwoman-collection.json`
+//Colls hold the structure of the basic `postwoman-collection.json`
 type Colls struct {
 	Name    string    `json:"name"`
 	Folders []string  `json:"folders"`
@@ -46,21 +46,13 @@ func ReadCollection(c *cli.Context) {
 	if err != nil {
 		fmt.Print(err)
 	}
-	//fmt.Print(string(data))
-	jsondat := []Colls{}
-
+	var jsondat []Colls
 	err = json.Unmarshal([]byte(data), &jsondat)
 	if err != nil {
 		fmt.Println(err)
 	}
+	fmt.Println("Name:\t" + color.HiMagentaString(jsondat[0].Name))
 	for i := 0; i < len(jsondat[0].Request); i++ {
-		/* fmt.Printf(`
-		URL: %s
-		Method: %s
-		Auth: %s
-		Token:%s
-		Headers: %s
-		-------`, jsondat[0].Request[i].URL+jsondat[0].Request[i].Path, jsondat[0].Request[i].Method, jsondat[0].Request[i].Auth, jsondat[0].Request[i].Token, jsondat[0].Request[i].Heads) */
 		request(jsondat, i)
 	}
 
@@ -115,9 +107,13 @@ func getsend(c []Colls, ind int, method string) (string, error) {
 
 func sendpopa(c []Colls, ind int, method string) (string, error) {
 	color := color.New(color.FgCyan, color.Bold)
-
+	var jsonStr []byte
 	var url = c[0].Request[ind].URL + c[0].Request[ind].Path
-	var jsonStr = []byte(string(c[0].Request[ind].Bparams[0].Key[0] + c[0].Request[ind].Bparams[0].Value[0]))
+	if len(c[0].Request[ind].Bparams) > 0 {
+		jsonStr = []byte(string(c[0].Request[ind].Bparams[0].Key[0] + c[0].Request[ind].Bparams[0].Value[0]))
+	} else {
+		jsonStr = nil
+	}
 
 	req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonStr))
 	req.Header.Set("Content-Type", c[0].Request[ind].Ctype)
